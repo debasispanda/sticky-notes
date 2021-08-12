@@ -2,10 +2,10 @@ package com.dpanda.stickynotes.service;
 
 import com.dpanda.stickynotes.model.Note;
 import com.dpanda.stickynotes.model.NoteRequest;
-import com.dpanda.stickynotes.model.User;
+import com.dpanda.stickynotes.model.AppUser;
 import com.dpanda.stickynotes.repository.NoteRepository;
 import com.dpanda.stickynotes.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -13,12 +13,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class NoteService {
-    @Autowired
-    private NoteRepository noteRepository;
+    private final NoteRepository noteRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public List<Note> getNotes() {
         return noteRepository.findAll();
@@ -34,7 +33,7 @@ public class NoteService {
     }
 
     public void saveNote(NoteRequest note) {
-        User user = userRepository.getOne(note.getUserId());
+        AppUser user = userRepository.getOne(note.getUserId());
         if (user == null) {
             throw new IllegalArgumentException("Invalid user id!");
         }

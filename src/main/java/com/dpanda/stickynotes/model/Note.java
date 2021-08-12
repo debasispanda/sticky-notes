@@ -8,7 +8,6 @@ import java.util.Date;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
-@Table(name = "notes")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,9 +34,9 @@ public class Note {
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "id", updatable = false)
     @Getter(AccessLevel.NONE)
-    private User user;
+    private AppUser user;
 
-    public Note(String title, String content, Date created, Date modified, User user) {
+    public Note(String title, String content, Date created, Date modified, AppUser user) {
         this.title = title;
         this.content = content;
         this.created = created;
