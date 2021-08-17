@@ -8,10 +8,8 @@ import java.util.Date;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Note {
     @Id
     @SequenceGenerator(name = "sticky_notes_sequence", sequenceName = "sticky_notes_sequence", allocationSize = 1)

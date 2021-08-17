@@ -10,9 +10,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @NoArgsConstructor
 public class AppUser implements UserDetails {
     @Id

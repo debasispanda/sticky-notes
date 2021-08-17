@@ -36,7 +36,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
                 .addFilterAfter(new JwtTokenVerifyFilter(jwtConfig, secretKey), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/", "/css/*", "/js/*", "/api/v*/user/register/**")
+                .antMatchers("/", "/*.js", "/*.css", "/*.ico", "/api/v*/user/register/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
