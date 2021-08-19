@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.4.8'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id "com.github.node-gradle.node" version "3.0.1"
 }
 
 group = 'com.dpanda'
@@ -15,7 +16,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compile "org.springframework.boot:spring-boot-starter-security"
+	implementation "org.springframework.boot:spring-boot-starter-security"
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2', 'io.jsonwebtoken:jjwt-jackson:0.11.2'
@@ -29,4 +30,31 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+task npmInstallDependencies(type: NpmTask) {
+	dependsOn 'npmSetup'
+	execOverrides {
+		it.ignoreExitValue = true
+		it.workingDir = 'src/web-client'
+	}
+	args = ['install']
+}
+
+task npmBuild(type: NpmTask) {
+	dependsOn 'npmInstallDependencies'
+	execOverrides {
+		it.workingDir = 'src/web-client'
+	}
+	args = ['run', 'build']
+}
+
+task copyClientDist(type: Copy) {
+	dependsOn 'npmBuild'
+	from "$projectDir/src/web-client/dist/web-client"
+	into "$projectDir/src/main/resources/static"
+}
+
+processResources {
+	dependsOn 'copyClientDist'
 }

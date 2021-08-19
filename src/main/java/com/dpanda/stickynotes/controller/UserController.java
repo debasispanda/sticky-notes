@@ -4,8 +4,10 @@ import com.dpanda.stickynotes.model.AppUser;
 import com.dpanda.stickynotes.model.AppUserRequest;
 import com.dpanda.stickynotes.service.AppUserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -17,6 +19,12 @@ public class UserController {
     @GetMapping
     public List<AppUser> getUsers() {
         return appUserService.getAll();
+    }
+
+    @GetMapping(path = "/_me")
+    @ResponseBody
+    public UserDetails getLoggedInUserDetails(Principal principal) {
+        return appUserService.loadUserByUsername(principal.getName());
     }
 
     @PostMapping(path = "/register")

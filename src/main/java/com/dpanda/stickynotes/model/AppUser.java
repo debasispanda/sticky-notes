@@ -37,6 +37,7 @@ public class AppUser implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Getter(value = AccessLevel.NONE)
     private AppUserRole userRole;
 
     private Boolean locked = false;

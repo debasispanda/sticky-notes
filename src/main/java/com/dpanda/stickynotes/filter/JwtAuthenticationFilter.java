@@ -1,6 +1,7 @@
 package com.dpanda.stickynotes.filter;
 
 import com.dpanda.stickynotes.model.AppAuthRequest;
+import com.dpanda.stickynotes.model.AppAuthResponse;
 import com.dpanda.stickynotes.security.JwtConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
@@ -16,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +39,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             AppAuthRequest authRequest = new ObjectMapper().readValue(request.getInputStream(), AppAuthRequest.class);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    authRequest.getUserName(),
+                    authRequest.getUsername(),
                     authRequest.getPassword(),
                     new ArrayList<>()
             );
@@ -58,6 +60,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
                 .signWith(secretKey)
                 .compact();
-        response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter writer = response.getWriter();
+
+        String json = new ObjectMapper().writeValueAsString(new AppAuthResponse(token));
+        writer.write(json);
+        writer.flush();
     }
 }
